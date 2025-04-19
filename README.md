@@ -1,67 +1,170 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https://developers.cloudflare.com/pages/get-started/c3).
+# BITians Social Media Platform
 
-## Getting Started
+## Project Overview
+This project aims to create a dedicated social media platform for BIT Mesra, Ranchi, optimized for college-specific interactions and features. The goal is to develop a highly engaging and useful platform that becomes an integral part of campus life.
 
-First, run the development server:
+## Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Campus-specific Authentication**
+   - Use college email for registration
+   - Verify student/faculty status
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Personalized Profiles**
+   - Customizable academic information
+   - Skill showcases and project portfolios
 
-## Cloudflare integration
+3. **Department and Course Groups**
+   - Automatic enrollment based on student data
+   - Resource sharing and discussion forums
 
-Besides the `dev` script mentioned above `c3` has added a few extra scripts that allow you to integrate the application with the [Cloudflare Pages](https://pages.cloudflare.com/) environment, these are:
-  - `pages:build` to build the application for Pages using the [`@cloudflare/next-on-pages`](https://github.com/cloudflare/next-on-pages) CLI
-  - `preview` to locally preview your Pages application using the [Wrangler](https://developers.cloudflare.com/workers/wrangler/) CLI
-  - `deploy` to deploy your Pages application using the [Wrangler](https://developers.cloudflare.com/workers/wrangler/) CLI
+4. **Event Management**
+   - College event calendar
+   - Club and society event promotions
+   - RSVP and attendance tracking
 
-> __Note:__ while the `dev` script is optimal for local development you should preview your Pages application as well (periodically or before deployments) in order to make sure that it can properly work in the Pages environment (for more details see the [`@cloudflare/next-on-pages` recommended workflow](https://github.com/cloudflare/next-on-pages/blob/main/internal-packages/next-dev/README.md#recommended-development-workflow))
+5. **Campus Marketplace**
+   - Buy/sell/exchange textbooks and study materials
+   - Roommate finder for hostels
 
-### Bindings
+6. **Alumni Network**
+   - Connect current students with alumni
+   - Mentorship programs and job opportunities
 
-Cloudflare [Bindings](https://developers.cloudflare.com/pages/functions/bindings/) are what allows you to interact with resources available in the Cloudflare Platform.
+7. **Academic Support**
+   - Peer tutoring system
+   - Study group formation
 
-You can use bindings during development, when previewing locally your application and of course in the deployed application:
+8. **Campus News and Announcements**
+   - Official college updates
+   - Student-run news channels
 
-- To use bindings in dev mode you need to define them in the `next.config.js` file under `setupDevBindings`, this mode uses the `next-dev` `@cloudflare/next-on-pages` submodule. For more details see its [documentation](https://github.com/cloudflare/next-on-pages/blob/05b6256/internal-packages/next-dev/README.md).
+9. **Lost and Found**
+   - Report and claim lost items on campus
 
-- To use bindings in the preview mode you need to add them to the `pages:preview` script accordingly to the `wrangler pages dev` command. For more details see its [documentation](https://developers.cloudflare.com/workers/wrangler/commands/#dev-1) or the [Pages Bindings documentation](https://developers.cloudflare.com/pages/functions/bindings/).
+10. **Internship and Placement Portal**
+    - Company postings specific to BIT Mesra
+    - Interview experiences and tips
 
-- To use bindings in the deployed application you will need to configure them in the Cloudflare [dashboard](https://dash.cloudflare.com/). For more details see the  [Pages Bindings documentation](https://developers.cloudflare.com/pages/functions/bindings/).
+11. **Mess and Canteen Reviews**
+    - Daily menu updates
+    - Ratings and feedback system
 
-#### KV Example
+12. **Campus Map and Navigation**
+    - Interactive map of college facilities
+    - Class schedule integration with navigation
 
-`c3` has added for you an example showing how you can use a KV binding.
+13. **Anonymous Confession Board**
+    - Moderated platform for sharing thoughts
 
-In order to enable the example:
-- Search for javascript/typescript lines containing the following comment:
-  ```ts
-  // KV Example:
-  ```
-  and uncomment the commented lines below it (also uncomment the relevant imports).
-- In the `wrangler.jsonc` file add the following configuration line:
-  ```
-  "kv_namespaces": [{ "binding": "MY_KV_NAMESPACE", "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" }],
-  ```
-- If you're using TypeScript run the `cf-typegen` script to update the `env.d.ts` file:
-  ```bash
-  npm run cf-typegen
-  # or
-  yarn cf-typegen
-  # or
-  pnpm cf-typegen
-  # or
-  bun cf-typegen
-  ```
+14. **Gamification Elements**
+    - Reward points for academic achievements and platform engagement
+    - Leaderboards and badges
 
-After doing this you can run the `dev` or `preview` script and visit the `/api/hello` route to see the example in action.
+15. **Virtual Club Fair**
+    - Showcase of all college clubs and societies
+    - Easy sign-up and information access
 
-Finally, if you also want to see the example work in the deployed application make sure to add a `MY_KV_NAMESPACE` binding to your Pages application in its [dashboard kv bindings settings section](https://dash.cloudflare.com/?to=/:account/pages/view/:pages-project/settings/functions#kv_namespace_bindings_section). After having configured it make sure to re-deploy your application.
+16. **Stories and Anonymous Posts**
+    - Share temporary stories visible for 24 hours
+    - Post anonymously for privacy-sensitive topics
+
+17. **Group Creation and Management**
+    - Create and join interest-based or department-specific groups
+    - Advanced group admin features and moderation tools
+
+18. **Verification System**
+    - Blue tick verification for official college accounts and notable individuals
+    - Verified badges for recognized student organizations
+
+19. **Admin Panel**
+    - Comprehensive dashboard for platform management
+    - Content moderation and user management tools
+
+20. **Responsive UI**
+    - Seamless experience across desktop, tablet, and mobile devices
+    - Adaptive design for various screen sizes
+
+21. **Newsrooms**
+    - Dedicated spaces for college departments and student journalists
+    - Real-time updates on campus happenings
+
+22. **Future Events Calendar**
+    - Long-term event planning and promotion
+    - Integration with personal calendars
+
+23. **Academic Hub**
+    - Centralized repository for study materials, lecture notes, and past papers
+    - Subject-wise organization and easy search functionality
+
+24. **BIT All-in-One App**
+    - Integration of college services (library, hostel management, etc.)
+    - Single sign-on for all college-related digital services
+
+25. **Career Development Center**
+    - Resume builder and review system
+    - Mock interview scheduling with alumni and industry professionals
+
+26. **Health and Wellness Section**
+    - Mental health resources and anonymous counseling requests
+    - Fitness challenges and nutrition tips
+
+27. **Campus Sustainability Initiatives**
+    - Eco-friendly project tracking and participation
+    - Green campus leaderboard and rewards
+
+28. **Alumni Success Stories**
+    - Featured profiles of notable alumni
+    - Interactive timeline of alumni achievements
+
+29. **Virtual Lab Access**
+    - Remote access to college laboratory simulations
+    - Collaborative virtual experiments
+
+30. **Skill Development Workshops**
+    - Online and offline workshop organization and registration
+    - Skill endorsement system among peers
+
+31. **Campus Safety and Security**
+    - Emergency contact information and alerts
+    - Safe walk home feature with real-time tracking
+
+32. **Campus Polls and Surveys**
+    - Quick and easy creation of polls and surveys
+    - Real-time results and analysis
+
+33. **Campus Library Integration**
+    - Digital library access and e-book borrowing
+    - Physical library reservation system
+
+34. **Campus Radio Station**
+    - Live streaming of college radio shows
+    - Music and talk show archives
+
+35. **Campus Weather and Traffic Updates**
+    - Real-time weather and traffic information
+    - Integration with local weather and traffic APIs
+
+## Technical Requirements
+
+1. **Frontend**: React.js with Next.js for server-side rendering
+2. **Backend**: Node.js with Express.js
+3. **Database**: MongoDB for flexible data storage
+4. **Real-time Features**: Socket.io for instant messaging and notifications
+5. **Authentication**: JWT with college email verification
+6. **Cloud Hosting**: AWS or Google Cloud Platform
+7. **Mobile App**: React Native for cross-platform mobile experience
+8. **API Integration**: College management system API for data synchronization
+9. **Analytics**: Google Analytics for user behavior tracking
+10. **Security**: Regular security audits and HTTPS implementation
+
+## Development Roadmap
+
+1. **Phase 1**: Core features development (Authentication, Profiles, Groups)
+2. **Phase 2**: Academic and social features (Events, Marketplace, Academic Support)
+3. **Phase 3**: Advanced features and integrations (Alumni Network, Placement Portal)
+4. **Phase 4**: Mobile app development
+5. **Phase 5**: Testing, security audits, and performance optimization
+6. **Phase 6**: Beta launch and feedback collection
+7. **Phase 7**: Full launch and continuous improvement
+
+By focusing on these features and technical aspects, we aim to create a highly engaging and useful platform that becomes an indispensable part of life at BIT Mesra, Ranchi.
