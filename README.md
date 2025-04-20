@@ -144,18 +144,84 @@ This project aims to create a dedicated social media platform for BIT Mesra, Ran
     - Real-time weather and traffic information
     - Integration with local weather and traffic APIs
 
-## Technical Requirements
+## Technical Stack
 
-1. **Frontend**: React.js with Next.js for server-side rendering
-2. **Backend**: Node.js with Express.js
-3. **Database**: MongoDB for flexible data storage
-4. **Real-time Features**: Socket.io for instant messaging and notifications
-5. **Authentication**: JWT with college email verification
-6. **Cloud Hosting**: AWS or Google Cloud Platform
-7. **Mobile App**: React Native for cross-platform mobile experience
-8. **API Integration**: College management system API for data synchronization
-9. **Analytics**: Google Analytics for user behavior tracking
+1. **Frontend**: React.js with Next.js 15+ for server-side rendering
+2. **Authentication**: NextAuth.js with Google Sign-in
+3. **Database**: Drizzle ORM with Turso DB
+4. **Styling**: TailwindCSS for responsive design
+5. **Real-time Features**: Socket.io for instant messaging and notifications (planned)
+6. **Cloud Hosting**: Vercel or similar platform
+7. **Mobile Responsiveness**: Fully responsive design for all devices
+8. **API Integration**: College management system API for data synchronization (planned)
+9. **Analytics**: Google Analytics for user behavior tracking (planned)
 10. **Security**: Regular security audits and HTTPS implementation
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ (LTS recommended)
+- A Google OAuth client ID and secret
+- A Turso database account and token
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/bitians-next.git
+   cd bitians-next
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Copy the example environment file and update it with your credentials:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+4. Update the `.env.local` file with your credentials:
+   - Generate a `NEXTAUTH_SECRET` (you can use `openssl rand -base64 32`)
+   - Add your Google OAuth credentials
+   - Add your Turso database URL and auth token
+
+5. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Database Setup
+
+1. Generate the database schema:
+   ```bash
+   npm run db:generate
+   ```
+
+2. Push the schema to your Turso database:
+   ```bash
+   npm run db:push
+   ```
+
+3. View your database with Drizzle Studio:
+   ```bash
+   npm run db:studio
+   ```
+
+### Authentication Setup
+
+This project uses NextAuth.js with Google authentication. To set up Google OAuth:
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Navigate to "APIs & Services" > "Credentials"
+4. Create an OAuth client ID
+5. Add the authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+6. Copy the client ID and secret to your `.env.local` file
 
 ## Development Roadmap
 

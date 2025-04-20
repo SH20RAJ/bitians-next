@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import MainLayout from '../../components/layout/MainLayout';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,6 +11,40 @@ export const metadata = {
 };
 
 export default function MessagesPage() {
+  const [activeConversationId, setActiveConversationId] = useState(1);
+  const [showConversationList, setShowConversationList] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth >= 768) {
+        setShowConversationList(true);
+      }
+    };
+
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+    };
+  }, []);
+
+  // Handle conversation selection
+  const handleSelectConversation = (id) => {
+    setActiveConversationId(id);
+    if (isMobile) {
+      setShowConversationList(false);
+    }
+  };
+
+  // Handle back button on mobile
+  const handleBackToList = () => {
+    setShowConversationList(true);
+  };
+
   // Mock data for conversations
   const conversations = [
     {
@@ -103,56 +140,8 @@ export default function MessagesPage() {
     },
   ];
 
-  // Mock data for active conversation
-  const activeConversation = {
-    id: 1,
-    user: {
-      name: 'Rahul Sharma',
-      username: 'rahul_sharma',
-      avatar: 'https://i.pravatar.cc/150?img=2',
-      isOnline: true,
-      isVerified: true,
-      department: 'Computer Science',
-      year: '3rd Year',
-    },
-    messages: [
-      {
-        id: 1,
-        text: 'Hey there! How\'s your day going?',
-        time: '11:30 AM',
-        isSent: false,
-        isRead: true,
-      },
-      {
-        id: 2,
-        text: 'Pretty good! Working on that project for Software Engineering.',
-        time: '11:32 AM',
-        isSent: true,
-        isRead: true,
-      },
-      {
-        id: 3,
-        text: 'Nice! How far along are you?',
-        time: '11:33 AM',
-        isSent: false,
-        isRead: true,
-      },
-      {
-        id: 4,
-        text: 'Almost done with the frontend part. Need to work on the backend integration.',
-        time: '11:35 AM',
-        isSent: true,
-        isRead: true,
-      },
-      {
-        id: 5,
-        text: 'That\'s great progress! By the way, did you complete the assignment for tomorrow?',
-        time: '11:40 AM',
-        isSent: false,
-        isRead: true,
-      },
-    ],
-  };
+  // Get active conversation
+  const activeConversation = conversations.find(conv => conv.id === activeConversationId);
 
   // Mock data for suggested contacts
   const suggestedContacts = [
@@ -184,11 +173,11 @@ export default function MessagesPage() {
 
   return (
     <MainLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-card overflow-hidden h-[calc(100vh-12rem)]">
-          <div className="flex h-full">
-            {/* Left Sidebar - Conversations */}
-            <div className="w-80 border-r border-neutral-200 dark:border-neutral-800 flex flex-col h-full">
+      <div className="h-screen flex flex-col">
+        <div className="flex-1 flex overflow-hidden">
+          {/* Conversation List - Hidden on mobile when viewing a conversation */}
+          {(showConversationList || !isMobile) && (
+            <div className="flex flex-col w-full md:w-80 border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
               {/* Header */}
               <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center">
                 <h2 className="text-lg font-semibold">Messages</h2>
@@ -201,35 +190,36 @@ export default function MessagesPage() {
                   </button>
                 </div>
               </div>
-              
+
               {/* Search */}
               <div className="p-3 border-b border-neutral-200 dark:border-neutral-800">
                 <div className="relative">
-                  <input 
-                    type="text" 
-                    placeholder="Search messages..." 
+                  <input
+                    type="text"
+                    placeholder="Search messages..."
                     className="w-full py-2 px-4 pr-8 rounded-full bg-neutral-100 dark:bg-neutral-800 text-sm border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                   <span className="absolute right-3 top-1/2 transform -translate-y-1/2 material-symbols-rounded text-neutral-500">search</span>
                 </div>
               </div>
-              
+
               {/* Conversation List */}
               <div className="flex-1 overflow-y-auto">
                 {conversations.map(conversation => (
-                  <div 
+                  <div
                     key={conversation.id}
                     className={`p-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors cursor-pointer ${
-                      conversation.isActive ? 'bg-primary-50 dark:bg-primary-900/20' : ''
+                      conversation.id === activeConversationId ? 'bg-primary-50 dark:bg-primary-900/20' : ''
                     }`}
+                    onClick={() => handleSelectConversation(conversation.id)}
                   >
                     <div className="flex items-start">
                       <div className="relative mr-3">
                         <div className="relative h-12 w-12 rounded-full overflow-hidden">
-                          <Image 
-                            src={conversation.user.avatar} 
-                            alt={conversation.user.name} 
-                            fill 
+                          <Image
+                            src={conversation.user.avatar}
+                            alt={conversation.user.name}
+                            fill
                             className="object-cover"
                           />
                         </div>
@@ -260,8 +250,8 @@ export default function MessagesPage() {
                         </div>
                         <div className="flex items-center justify-between mt-1">
                           <p className={`text-xs truncate ${
-                            conversation.unreadCount > 0 
-                              ? 'font-medium text-neutral-900 dark:text-neutral-100' 
+                            conversation.unreadCount > 0
+                              ? 'font-medium text-neutral-900 dark:text-neutral-100'
                               : 'text-neutral-500 dark:text-neutral-400'
                           }`}>
                             {conversation.user.isGroup && !conversation.lastMessage.isSent && (
@@ -284,80 +274,100 @@ export default function MessagesPage() {
                 ))}
               </div>
             </div>
-            
-            {/* Right Side - Active Conversation */}
-            <div className="flex-1 flex flex-col h-full">
+
+          {/* Active Conversation - Hidden on mobile when viewing the list */}
+          {activeConversation && (!showConversationList || !isMobile) && (
+            <div className="flex-1 flex flex-col bg-white dark:bg-neutral-900">
               {/* Conversation Header */}
               <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center">
-                <div className="flex items-center">
-                  <div className="relative mr-3">
-                    <div className="relative h-10 w-10 rounded-full overflow-hidden">
-                      <Image 
-                        src={activeConversation.user.avatar} 
-                        alt={activeConversation.user.name} 
-                        fill 
-                        className="object-cover"
-                      />
-                    </div>
-                    {activeConversation.user.isOnline && (
-                      <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-tertiary-500 border-2 border-white dark:border-neutral-900"></span>
+                  <div className="flex items-center">
+                    {isMobile && (
+                      <button
+                        className="p-2 mr-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                        onClick={handleBackToList}
+                      >
+                        <span className="material-symbols-rounded">arrow_back</span>
+                      </button>
                     )}
-                  </div>
-                  <div>
-                    <div className="flex items-center">
-                      <h3 className="font-medium">
-                        {activeConversation.user.name}
-                      </h3>
-                      {activeConversation.user.isVerified && (
-                        <span className="ml-1 text-primary-500 dark:text-primary-400">
-                          <span className="material-symbols-rounded text-sm fill-icon">verified</span>
-                        </span>
+                    <div className="relative mr-3">
+                      <div className="relative h-10 w-10 rounded-full overflow-hidden">
+                        <Image
+                          src={activeConversation.user.avatar}
+                          alt={activeConversation.user.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      {activeConversation.user.isOnline && (
+                        <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-tertiary-500 border-2 border-white dark:border-neutral-900"></span>
                       )}
                     </div>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                      {activeConversation.user.isOnline ? 'Online' : 'Offline'}
-                      {activeConversation.user.department && ` • ${activeConversation.user.department}`}
-                      {activeConversation.user.year && ` • ${activeConversation.user.year}`}
-                    </p>
+                    <div>
+                      <div className="flex items-center">
+                        <h3 className="font-medium">
+                          {activeConversation.user.name}
+                        </h3>
+                        {activeConversation.user.isVerified && (
+                          <span className="ml-1 text-primary-500 dark:text-primary-400">
+                            <span className="material-symbols-rounded text-sm fill-icon">verified</span>
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                        {activeConversation.user.isOnline ? 'Online' : 'Offline'}
+                        {activeConversation.user.department && ` • ${activeConversation.user.department}`}
+                        {activeConversation.user.year && ` • ${activeConversation.user.year}`}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+                      <span className="material-symbols-rounded">call</span>
+                    </button>
+                    <button className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+                      <span className="material-symbols-rounded">videocam</span>
+                    </button>
+                    <button className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+                      <span className="material-symbols-rounded">info</span>
+                    </button>
                   </div>
                 </div>
-                <div className="flex space-x-2">
-                  <button className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-                    <span className="material-symbols-rounded">call</span>
-                  </button>
-                  <button className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-                    <span className="material-symbols-rounded">videocam</span>
-                  </button>
-                  <button className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-                    <span className="material-symbols-rounded">info</span>
-                  </button>
-                </div>
-              </div>
-              
+
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-neutral-50 dark:bg-neutral-800/30">
                 {activeConversation.messages.map(message => (
-                  <div 
+                  <div
                     key={message.id}
                     className={`flex ${message.isSent ? 'justify-end' : 'justify-start'}`}
                   >
                     {!message.isSent && (
                       <div className="relative h-8 w-8 rounded-full overflow-hidden mr-2 flex-shrink-0 mt-1">
-                        <Image 
-                          src={activeConversation.user.avatar} 
-                          alt={activeConversation.user.name} 
-                          fill 
-                          className="object-cover"
-                        />
+                        {message.sender ? (
+                          <div className="h-8 w-8 flex items-center justify-center bg-secondary-500 text-white font-medium text-xs">
+                            {message.sender.split(' ').map(word => word[0]).join('')}
+                          </div>
+                        ) : (
+                          <Image
+                            src={activeConversation.user.avatar}
+                            alt={activeConversation.user.name}
+                            fill
+                            className="object-cover"
+                          />
+                        )}
                       </div>
                     )}
-                    <div 
+                    <div
                       className={`max-w-[70%] px-4 py-2 rounded-2xl ${
-                        message.isSent 
-                          ? 'bg-primary-500 text-white rounded-tr-none' 
-                          : 'bg-neutral-100 dark:bg-neutral-800 rounded-tl-none'
+                        message.isSent
+                          ? 'bg-primary-500 text-white rounded-tr-none'
+                          : 'bg-white dark:bg-neutral-700 rounded-tl-none'
                       }`}
                     >
+                      {message.sender && !message.isSent && (
+                        <p className="text-xs font-medium text-secondary-500 dark:text-secondary-300 mb-1">
+                          {message.sender}
+                        </p>
+                      )}
                       <p className="text-sm">{message.text}</p>
                       <div className={`text-xs mt-1 flex justify-end ${
                         message.isSent ? 'text-white/70' : 'text-neutral-500 dark:text-neutral-400'
@@ -373,7 +383,7 @@ export default function MessagesPage() {
                   </div>
                 ))}
               </div>
-              
+
               {/* Message Input */}
               <div className="p-4 border-t border-neutral-200 dark:border-neutral-800">
                 <div className="flex items-center">
@@ -381,9 +391,9 @@ export default function MessagesPage() {
                     <span className="material-symbols-rounded">add_circle</span>
                   </button>
                   <div className="flex-1 relative">
-                    <input 
-                      type="text" 
-                      placeholder="Type a message..." 
+                    <input
+                      type="text"
+                      placeholder="Type a message..."
                       className="w-full py-2 px-4 rounded-full bg-neutral-100 dark:bg-neutral-800 text-sm border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                     <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
@@ -401,20 +411,20 @@ export default function MessagesPage() {
                 </div>
               </div>
             </div>
-            
-            {/* Right Sidebar - Suggested Contacts */}
-            <div className="w-64 border-l border-neutral-200 dark:border-neutral-800 hidden xl:block">
+
+            {/* Right Sidebar - Suggested Contacts (Only visible on large screens) */}
+            <div className="w-64 border-l border-neutral-200 dark:border-neutral-800 hidden xl:flex xl:flex-col bg-white dark:bg-neutral-900">
               <div className="p-4 border-b border-neutral-200 dark:border-neutral-800">
                 <h3 className="font-medium">Suggested Contacts</h3>
               </div>
-              <div className="p-4 space-y-4">
+              <div className="p-4 space-y-4 flex-1 overflow-y-auto">
                 {suggestedContacts.map(contact => (
                   <div key={contact.id} className="flex items-center">
                     <div className="relative h-10 w-10 rounded-full overflow-hidden mr-3 flex-shrink-0">
-                      <Image 
-                        src={contact.avatar} 
-                        alt={contact.name} 
-                        fill 
+                      <Image
+                        src={contact.avatar}
+                        alt={contact.name}
+                        fill
                         className="object-cover"
                       />
                     </div>
@@ -442,7 +452,7 @@ export default function MessagesPage() {
                   View All Contacts
                 </button>
               </div>
-              
+
               <div className="p-4 border-t border-neutral-200 dark:border-neutral-800">
                 <h3 className="font-medium mb-3">Quick Actions</h3>
                 <div className="space-y-2">
@@ -460,7 +470,6 @@ export default function MessagesPage() {
                   </button>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
