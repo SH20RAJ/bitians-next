@@ -260,6 +260,11 @@ export const hubMembersRelations = relations(hubMembers, ({ one }) => ({
   user: one(users, { fields: [hubMembers.userId], references: [users.id] }),
 }));
 
+export const mediaRelations = relations(media, ({ one }) => ({
+  post: one(posts, { fields: [media.postId], references: [posts.id] }),
+  user: one(users, { fields: [media.userId], references: [users.id] }),
+}));
+
 export const collectionsRelations = relations(collections, ({ one, many }) => ({
   user: one(users, { fields: [collections.userId], references: [users.id] }),
   items: many(collectionItems),

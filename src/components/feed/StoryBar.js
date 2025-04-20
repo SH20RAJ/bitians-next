@@ -35,12 +35,12 @@ export default function StoryBar() {
   };
 
   return (
-    <div className="bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 py-4 rounded-xl shadow-card mb-4">
-      <div className="flex space-x-4 overflow-x-auto px-4 pb-1 hide-scrollbar">
+    <div className="bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 py-4 rounded-xl shadow-card mb-4 max-w-full">
+      <div className="flex space-x-3 sm:space-x-4 overflow-x-auto px-2 sm:px-4 pb-1 hide-scrollbar">
         {stories.map((story) => (
           <button
             key={story.id}
-            className="flex flex-col items-center space-y-1 min-w-[80px] group"
+            className="flex flex-col items-center space-y-1 min-w-[70px] sm:min-w-[80px] group"
             onClick={() => handleStoryClick(story.id)}
           >
             <div
@@ -53,7 +53,7 @@ export default function StoryBar() {
               }`}
             >
               <div className="bg-white dark:bg-neutral-900 p-[2px] rounded-full">
-                <div className="relative h-16 w-16 rounded-full overflow-hidden">
+                <div className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-full overflow-hidden">
                   <Image
                     src={story.image}
                     alt={story.username}

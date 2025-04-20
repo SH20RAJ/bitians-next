@@ -20,37 +20,79 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (status !== 'loading') {
-      // Simulate API call to fetch profile data
-      setTimeout(() => {
-        // Mock profile data
-        const mockProfile = {
-          username,
-          name: username.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-          avatar: `https://i.pravatar.cc/300?u=${username}`,
-          bio: 'Student at BIT Mesra | Computer Science | Web Developer | AI Enthusiast',
-          postsCount: Math.floor(Math.random() * 100) + 10,
-          followersCount: Math.floor(Math.random() * 1000) + 100,
-          followingCount: Math.floor(Math.random() * 500) + 50,
-          isVerified: Math.random() > 0.7,
-          department: 'Computer Science',
-          year: '3rd Year',
-          email: Math.random() > 0.5 ? session?.user?.email : `${username}@example.com`,
-          isFollowing: Math.random() > 0.5,
-        };
+      const fetchProfileData = async () => {
+        try {
+          const response = await fetch(`/api/users/${username}`);
 
-        // Mock posts data
-        const mockPosts = Array.from({ length: 12 }, (_, i) => ({
-          id: i + 1,
-          imageUrl: `https://picsum.photos/id/${((i + 1) * 10) % 1000}/600/600`,
-          likesCount: Math.floor(Math.random() * 100) + 5,
-          commentsCount: Math.floor(Math.random() * 20) + 1,
-          caption: ['Enjoying the weekend!', 'Study session', 'Campus vibes', 'New project coming soon'][i % 4],
-        }));
+          if (!response.ok) {
+            throw new Error('Failed to fetch profile data');
+          }
 
-        setProfile(mockProfile);
-        setPosts(mockPosts);
-        setLoading(false);
-      }, 1000);
+          const data = await response.json();
+
+          // Transform the data to match the component's expected format
+          const profileData = {
+            username: data.user.username,
+            name: data.user.name,
+            avatar: data.user.image || `https://i.pravatar.cc/300?u=${username}`,
+            bio: data.user.bio || 'Student at BIT Mesra',
+            postsCount: data.user.stats.postsCount,
+            followersCount: data.user.stats.followersCount,
+            followingCount: data.user.stats.followingCount,
+            isVerified: data.user.isVerified,
+            department: data.user.department,
+            year: data.user.year,
+            email: data.user.email,
+            isFollowing: data.user.isFollowing,
+          };
+
+          // Transform posts data
+          const postsData = data.user.posts.map(post => ({
+            id: post.id,
+            imageUrl: post.media && post.media.length > 0 ? post.media[0].url : `https://picsum.photos/id/${Math.floor(Math.random() * 1000)}/600/600`,
+            likesCount: post.likesCount,
+            commentsCount: post.commentsCount,
+            caption: post.content,
+          }));
+
+          setProfile(profileData);
+          setPosts(postsData);
+          setLoading(false);
+        } catch (error) {
+          console.error('Error fetching profile data:', error);
+
+          // Fallback to mock data if API fails
+          const mockProfile = {
+            username,
+            name: username.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+            avatar: `https://i.pravatar.cc/300?u=${username}`,
+            bio: 'Student at BIT Mesra | Computer Science | Web Developer | AI Enthusiast',
+            postsCount: Math.floor(Math.random() * 100) + 10,
+            followersCount: Math.floor(Math.random() * 1000) + 100,
+            followingCount: Math.floor(Math.random() * 500) + 50,
+            isVerified: Math.random() > 0.7,
+            department: 'Computer Science',
+            year: '3rd Year',
+            email: Math.random() > 0.5 ? session?.user?.email : `${username}@example.com`,
+            isFollowing: Math.random() > 0.5,
+          };
+
+          // Mock posts data
+          const mockPosts = Array.from({ length: 12 }, (_, i) => ({
+            id: i + 1,
+            imageUrl: `https://picsum.photos/id/${((i + 1) * 10) % 1000}/600/600`,
+            likesCount: Math.floor(Math.random() * 100) + 5,
+            commentsCount: Math.floor(Math.random() * 20) + 1,
+            caption: ['Enjoying the weekend!', 'Study session', 'Campus vibes', 'New project coming soon'][i % 4],
+          }));
+
+          setProfile(mockProfile);
+          setPosts(mockPosts);
+          setLoading(false);
+        }
+      };
+
+      fetchProfileData();
     }
   }, [username, status, session]);
 
@@ -94,19 +136,19 @@ export default function ProfilePage() {
                     </span>
                   )}
                 </h1>
-                
+
                 {isCurrentUser ? (
-                  <Link 
-                    href="/settings/profile" 
+                  <Link
+                    href="/settings/profile"
                     className="px-4 py-1.5 border border-neutral-300 dark:border-neutral-700 rounded-lg text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
                   >
                     Edit Profile
                   </Link>
                 ) : (
-                  <button 
+                  <button
                     className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                      profile.isFollowing 
-                        ? 'bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700' 
+                      profile.isFollowing
+                        ? 'bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700'
                         : 'bg-primary-500 hover:bg-primary-600 text-white'
                     }`}
                   >
@@ -133,7 +175,7 @@ export default function ProfilePage() {
 
               {/* Bio */}
               <p className="text-sm mb-2">{profile.bio}</p>
-              
+
               {/* Additional Info */}
               <div className="text-sm text-neutral-600 dark:text-neutral-400 space-y-1">
                 <div className="flex items-center justify-center md:justify-start">
@@ -154,8 +196,8 @@ export default function ProfilePage() {
           <div className="flex border-b border-neutral-200 dark:border-neutral-800">
             <button
               className={`flex-1 py-3 text-center font-medium text-sm transition-colors ${
-                activeTab === 'posts' 
-                  ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500' 
+                activeTab === 'posts'
+                  ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
                   : 'text-neutral-600 dark:text-neutral-400'
               }`}
               onClick={() => setActiveTab('posts')}
@@ -165,8 +207,8 @@ export default function ProfilePage() {
             </button>
             <button
               className={`flex-1 py-3 text-center font-medium text-sm transition-colors ${
-                activeTab === 'circles' 
-                  ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500' 
+                activeTab === 'circles'
+                  ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
                   : 'text-neutral-600 dark:text-neutral-400'
               }`}
               onClick={() => setActiveTab('circles')}
@@ -176,8 +218,8 @@ export default function ProfilePage() {
             </button>
             <button
               className={`flex-1 py-3 text-center font-medium text-sm transition-colors ${
-                activeTab === 'collections' 
-                  ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500' 
+                activeTab === 'collections'
+                  ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
                   : 'text-neutral-600 dark:text-neutral-400'
               }`}
               onClick={() => setActiveTab('collections')}

@@ -132,14 +132,61 @@ export default function FeedContainer() {
     });
   };
 
-  // Initial load
+  // Fetch posts from API
   useEffect(() => {
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setPosts(generateMockPosts(1));
-      setIsLoading(false);
-    }, 1000);
+    const fetchPosts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/posts?page=1&limit=5');
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch posts');
+        }
+
+        const data = await response.json();
+
+        // Transform the data to match the component's expected format
+        const transformedPosts = data.posts.map(post => {
+          // Base post object
+          const basePost = {
+            id: post.id,
+            user: {
+              username: post.user.username,
+              avatar: post.user.image || `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 10) + 1}`,
+              isVerified: post.user.isVerified,
+            },
+            caption: post.content,
+            likesCount: post.likesCount,
+            commentsCount: post.commentsCount,
+            isLiked: false, // We'll need to implement this with the actual user data
+            isSaved: false, // We'll need to implement this with the actual user data
+            location: null, // Add location if available in the API
+          };
+
+          // Add media
+          if (post.media && post.media.length > 0) {
+            if (post.media.length === 1) {
+              basePost.imageUrl = post.media[0].url;
+            } else {
+              basePost.images = post.media.map(m => m.url);
+            }
+          }
+
+          return basePost;
+        });
+
+        setPosts(transformedPosts);
+        setHasMore(data.pagination.hasMore);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        // Fallback to mock data if API fails
+        setPosts(generateMockPosts(1));
+        setIsLoading(false);
+      }
+    };
+
+    fetchPosts();
 
     // Simulate new posts notification after some time (psychological hook)
     const newPostTimer = setTimeout(() => {
@@ -171,40 +218,128 @@ export default function FeedContainer() {
     };
   }, [hasMore, isLoading]);
 
-  const loadMorePosts = () => {
+  const loadMorePosts = async () => {
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const nextPage = page + 1;
+      const response = await fetch(`/api/posts?page=${nextPage}&limit=5`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch more posts');
+      }
+
+      const data = await response.json();
+
+      // Transform the data to match the component's expected format
+      const transformedPosts = data.posts.map(post => {
+        // Base post object
+        const basePost = {
+          id: post.id,
+          user: {
+            username: post.user.username,
+            avatar: post.user.image || `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 10) + 1}`,
+            isVerified: post.user.isVerified,
+          },
+          caption: post.content,
+          likesCount: post.likesCount,
+          commentsCount: post.commentsCount,
+          isLiked: false,
+          isSaved: false,
+          location: null,
+        };
+
+        // Add media
+        if (post.media && post.media.length > 0) {
+          if (post.media.length === 1) {
+            basePost.imageUrl = post.media[0].url;
+          } else {
+            basePost.images = post.media.map(m => m.url);
+          }
+        }
+
+        return basePost;
+      });
+
+      setPosts(prev => [...prev, ...transformedPosts]);
+      setPage(nextPage);
+      setHasMore(data.pagination.hasMore);
+    } catch (error) {
+      console.error('Error fetching more posts:', error);
+      // Fallback to mock data if API fails
       const newPosts = generateMockPosts(page + 1);
       setPosts(prev => [...prev, ...newPosts]);
       setPage(prev => prev + 1);
-      setIsLoading(false);
 
       // Stop after 5 pages (for demo purposes)
       if (page >= 5) {
         setHasMore(false);
       }
-    }, 1000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setIsLoading(true);
     setNewPostsAvailable(false);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/posts?page=1&limit=5');
+
+      if (!response.ok) {
+        throw new Error('Failed to refresh posts');
+      }
+
+      const data = await response.json();
+
+      // Transform the data to match the component's expected format
+      const transformedPosts = data.posts.map(post => {
+        // Base post object
+        const basePost = {
+          id: post.id,
+          user: {
+            username: post.user.username,
+            avatar: post.user.image || `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 10) + 1}`,
+            isVerified: post.user.isVerified,
+          },
+          caption: post.content,
+          likesCount: post.likesCount,
+          commentsCount: post.commentsCount,
+          isLiked: false,
+          isSaved: false,
+          location: null,
+        };
+
+        // Add media
+        if (post.media && post.media.length > 0) {
+          if (post.media.length === 1) {
+            basePost.imageUrl = post.media[0].url;
+          } else {
+            basePost.images = post.media.map(m => m.url);
+          }
+        }
+
+        return basePost;
+      });
+
+      setPosts(transformedPosts);
+      setHasMore(data.pagination.hasMore);
+    } catch (error) {
+      console.error('Error refreshing posts:', error);
+      // Fallback to mock data if API fails
       const newPosts = generateMockPosts(1);
       setPosts(newPosts);
+    } finally {
       setIsLoading(false);
       setPage(1);
       setHasMore(true);
-    }, 1000);
+    }
   };
 
   return (
-    <div className="max-w-7xl mx-auto pt-4 pb-20 md:pb-0 px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-4">
+    <div className="max-w-7xl mx-auto pt-4 pb-24 md:pb-0 px-2 sm:px-4 lg:px-8 flex flex-col lg:flex-row gap-4 overflow-x-hidden">
       {/* Main feed column */}
-      <div className="flex-1 max-w-[650px] mx-auto lg:mx-0 w-full">
+      <div className="flex-1 max-w-full sm:max-w-[650px] mx-auto lg:mx-0 w-full">
         {/* Feed tabs */}
         <div className="flex mb-4 bg-white dark:bg-neutral-900 rounded-xl shadow-card overflow-hidden">
           <button
@@ -242,7 +377,7 @@ export default function FeedContainer() {
         <StoryBar />
 
         {/* Feed posts */}
-        <div className="space-y-4">
+        <div className="space-y-4 max-w-full overflow-hidden">
           {posts.map(post => (
             <FeedPost key={post.id} post={post} />
           ))}

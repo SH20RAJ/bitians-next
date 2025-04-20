@@ -153,10 +153,10 @@ export default function FeedPost({ post }) {
   };
 
   return (
-    <article ref={postRef} className="bg-white dark:bg-neutral-900 rounded-xl shadow-card mb-4 overflow-hidden animate-fade-in transition-all duration-300 hover:shadow-card-hover">
+    <article ref={postRef} className="bg-white dark:bg-neutral-900 rounded-xl shadow-card mb-4 overflow-hidden animate-fade-in transition-all duration-300 hover:shadow-card-hover max-w-full">
       {/* Post Header */}
-      <div className="flex items-center justify-between px-4 py-3">
-        <div className="flex items-center">
+      <div className="flex items-center justify-between px-4 py-3 flex-wrap">
+        <div className="flex items-center flex-wrap">
           <div className="h-10 w-10 rounded-full overflow-hidden mr-3 ring-2 ring-primary-100 dark:ring-primary-900">
             <Image
               src={post.user.avatar}
@@ -167,7 +167,7 @@ export default function FeedPost({ post }) {
             />
           </div>
           <div>
-            <div className="flex items-center">
+            <div className="flex items-center flex-wrap">
               <Link href={`/profile/${post.user.username}`} className="font-semibold text-sm hover:underline">
                 {post.user.username}
               </Link>
@@ -281,7 +281,7 @@ export default function FeedPost({ post }) {
         </div>
       ) : (
         <div className="relative" onClick={handleImageTap}>
-          <div className="aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+          <div className="aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-800 w-full">
             <Image
               src={post.imageUrl}
               alt="Post content"
@@ -301,7 +301,7 @@ export default function FeedPost({ post }) {
       )}
 
       {/* Post Actions */}
-      <div className="px-4 pt-2 flex justify-between">
+      <div className="px-4 pt-2 flex justify-between flex-wrap">
         <div className="flex space-x-1">
           <div className="relative">
             <button

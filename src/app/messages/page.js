@@ -5,10 +5,7 @@ import MainLayout from '../../components/layout/MainLayout';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export const metadata = {
-  title: 'Messages | BITians',
-  description: 'Your conversations on BITians',
-};
+ 
 
 export default function MessagesPage() {
   const [activeConversationId, setActiveConversationId] = useState(1);
@@ -47,6 +44,8 @@ export default function MessagesPage() {
 
   // Mock data for conversations
   const conversations = [
+    // Add messages array to each conversation
+
     {
       id: 1,
       user: {
@@ -64,6 +63,43 @@ export default function MessagesPage() {
       },
       unreadCount: 0,
       isActive: true,
+      messages: [
+        {
+          id: 1,
+          text: 'Hi there! How are you doing?',
+          time: '10:30 AM',
+          isSent: false,
+          isRead: true,
+        },
+        {
+          id: 2,
+          text: 'I\'m good, thanks! Just working on the project.',
+          time: '10:32 AM',
+          isSent: true,
+          isRead: true,
+        },
+        {
+          id: 3,
+          text: 'How\'s your part coming along?',
+          time: '10:33 AM',
+          isSent: true,
+          isRead: true,
+        },
+        {
+          id: 4,
+          text: 'It\'s going well. I\'ve completed the frontend design.',
+          time: '10:35 AM',
+          isSent: false,
+          isRead: true,
+        },
+        {
+          id: 5,
+          text: 'Hey, did you complete the assignment for tomorrow?',
+          time: '5 min ago',
+          isSent: false,
+          isRead: true,
+        },
+      ],
     },
     {
       id: 2,
@@ -83,6 +119,29 @@ export default function MessagesPage() {
       },
       unreadCount: 0,
       isActive: false,
+      messages: [
+        {
+          id: 1,
+          text: 'Hey Priya, do you have the notes from yesterday\'s class?',
+          time: '9:15 AM',
+          isSent: true,
+          isRead: true,
+        },
+        {
+          id: 2,
+          text: 'I missed the lecture due to a doctor\'s appointment.',
+          time: '9:16 AM',
+          isSent: true,
+          isRead: true,
+        },
+        {
+          id: 3,
+          text: 'Yes, I do. I\'ll send you the notes by evening.',
+          time: '2 hours ago',
+          isSent: false,
+          isRead: true,
+        },
+      ],
     },
     {
       id: 3,
@@ -101,6 +160,63 @@ export default function MessagesPage() {
       },
       unreadCount: 3,
       isActive: false,
+      messages: [
+        {
+          id: 1,
+          text: 'Welcome to the CS Department Circle! This group is for all CS students and faculty members.',
+          time: '1 week ago',
+          isSent: false,
+          isRead: true,
+          sender: 'Admin',
+        },
+        {
+          id: 2,
+          text: 'The mid-semester exam schedule has been posted on the department website.',
+          time: '3 days ago',
+          isSent: false,
+          isRead: true,
+          sender: 'Prof. Sharma',
+        },
+        {
+          id: 3,
+          text: 'Is there a study group for the Algorithms course?',
+          time: '2 days ago',
+          isSent: true,
+          isRead: true,
+        },
+        {
+          id: 4,
+          text: 'Yes, we meet every Tuesday at 5 PM in the CS lab.',
+          time: '2 days ago',
+          isSent: false,
+          isRead: true,
+          sender: 'Amit Kumar',
+        },
+        {
+          id: 5,
+          text: 'Important: Class schedule for next week has been updated.',
+          time: '1 day ago',
+          isSent: false,
+          isRead: false,
+          sender: 'Prof. Gupta',
+        },
+        {
+          id: 6,
+          text: 'The AI workshop has been rescheduled to Friday.',
+          time: '1 day ago',
+          isSent: false,
+          isRead: false,
+          sender: 'Prof. Gupta',
+        },
+        {
+          id: 7,
+          text: 'Please submit your project proposals by this weekend.',
+          time: '1 day ago',
+          isSent: false,
+          isRead: false,
+          sender: 'Prof. Gupta',
+        },
+      ],
     },
     {
       id: 4,
@@ -119,6 +235,36 @@ export default function MessagesPage() {
       },
       unreadCount: 1,
       isActive: false,
+      messages: [
+        {
+          id: 1,
+          text: 'Hey, are you free today?',
+          time: '11:30 AM',
+          isSent: true,
+          isRead: true,
+        },
+        {
+          id: 2,
+          text: 'Yes, I\'m free after 3 PM. What\'s up?',
+          time: '11:45 AM',
+          isSent: false,
+          isRead: true,
+        },
+        {
+          id: 3,
+          text: 'I need help with the database project.',
+          time: '11:47 AM',
+          isSent: true,
+          isRead: true,
+        },
+        {
+          id: 4,
+          text: 'Let\'s meet at the library around 4 PM.',
+          time: '3 hours ago',
+          isSent: false,
+          isRead: false,
+        },
+      ],
     },
     {
       id: 5,
@@ -137,6 +283,47 @@ export default function MessagesPage() {
       },
       unreadCount: 0,
       isActive: false,
+      messages: [
+        {
+          id: 1,
+          text: 'Welcome to the Project Team group! Our deadline is in 3 weeks.',
+          time: '1 week ago',
+          isSent: false,
+          isRead: true,
+          sender: 'Rahul Sharma',
+        },
+        {
+          id: 2,
+          text: 'I\'ve created the initial project structure. Please check it out.',
+          time: '5 days ago',
+          isSent: true,
+          isRead: true,
+        },
+        {
+          id: 3,
+          text: 'Looks good! I\'ll start working on the database schema.',
+          time: '5 days ago',
+          isSent: false,
+          isRead: true,
+          sender: 'Priya Patel',
+        },
+        {
+          id: 4,
+          text: 'I\'ll handle the frontend components.',
+          time: '5 days ago',
+          isSent: false,
+          isRead: true,
+          sender: 'Neha Gupta',
+        },
+        {
+          id: 5,
+          text: 'I\'ve pushed the latest changes to the repository.',
+          time: '5 hours ago',
+          isSent: false,
+          isRead: true,
+          sender: 'Vikram Singh',
+        },
+      ],
     },
   ];
 
@@ -274,10 +461,11 @@ export default function MessagesPage() {
                 ))}
               </div>
             </div>
+            )}
 
-          {/* Active Conversation - Hidden on mobile when viewing the list */}
-          {activeConversation && (!showConversationList || !isMobile) && (
-            <div className="flex-1 flex flex-col bg-white dark:bg-neutral-900">
+            {/* Active Conversation - Hidden on mobile when viewing the list */}
+            {activeConversation && (!showConversationList || !isMobile) && (
+              <div className="flex-1 flex flex-col bg-white dark:bg-neutral-900">
               {/* Conversation Header */}
               <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center">
                   <div className="flex items-center">
@@ -411,6 +599,8 @@ export default function MessagesPage() {
                 </div>
               </div>
             </div>
+            )
+            }
 
             {/* Right Sidebar - Suggested Contacts (Only visible on large screens) */}
             <div className="w-64 border-l border-neutral-200 dark:border-neutral-800 hidden xl:flex xl:flex-col bg-white dark:bg-neutral-900">
@@ -470,7 +660,8 @@ export default function MessagesPage() {
                   </button>
                 </div>
               </div>
-          </div>
+            </div>
+          ))&#125;
         </div>
       </div>
     </MainLayout>

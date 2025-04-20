@@ -195,3 +195,37 @@ body {
 .animate-heart-beat {
   animation: heartBeat 1s;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  /* Ensure content doesn't overflow on small screens */
+  .overflow-x-hidden {
+    overflow-x: hidden;
+  }
+
+  /* Adjust font sizes for better readability on mobile */
+  .text-sm {
+    font-size: 0.8125rem;
+  }
+
+  /* Ensure images don't overflow their containers */
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Improve tap targets for mobile */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Exception for icon buttons */
+  .p-2 {
+    min-height: unset;
+    min-width: unset;
+  }
+}

@@ -7,45 +7,45 @@ import { getSession } from '@/lib/auth/session';
 // GET /api/users/[username] - Get user profile
 export async function GET(request, { params }) {
   try {
-    const { username } = params;
-    
+    const username = params.username;
+
     // Get user data
     const user = await db.query.users.findFirst({
       where: eq(users.username, username),
     });
-    
+
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
-    
+
     // Get post count
     const postCountResult = await db
       .select({ count: sql`count(*)` })
       .from(posts)
       .where(eq(posts.userId, user.id));
-    
+
     const postCount = postCountResult[0].count;
-    
+
     // Get follower count
     const followerCountResult = await db
       .select({ count: sql`count(*)` })
       .from(follows)
       .where(eq(follows.followingId, user.id));
-    
+
     const followerCount = followerCountResult[0].count;
-    
+
     // Get following count
     const followingCountResult = await db
       .select({ count: sql`count(*)` })
       .from(follows)
       .where(eq(follows.followerId, user.id));
-    
+
     const followingCount = followingCountResult[0].count;
-    
+
     // Check if current user is following this user
     let isFollowing = false;
     const session = await getSession();
-    
+
     if (session && session.user) {
       const followRecord = await db
         .select()
@@ -57,10 +57,10 @@ export async function GET(request, { params }) {
           )
         )
         .limit(1);
-      
+
       isFollowing = followRecord.length > 0;
     }
-    
+
     // Get circles the user is a member of
     const userCircles = await db.query.circleMembers.findMany({
       where: eq(circleMembers.userId, user.id),
@@ -69,7 +69,7 @@ export async function GET(request, { params }) {
       },
       limit: 5,
     });
-    
+
     // Get hubs the user is a member of
     const userHubs = await db.query.hubMembers.findMany({
       where: eq(hubMembers.userId, user.id),
@@ -78,7 +78,7 @@ export async function GET(request, { params }) {
       },
       limit: 5,
     });
-    
+
     // Get recent posts
     const userPosts = await db.query.posts.findMany({
       where: eq(posts.userId, user.id),
@@ -90,7 +90,7 @@ export async function GET(request, { params }) {
         comments: true,
       },
     });
-    
+
     // Transform posts data
     const transformedPosts = userPosts.map(post => ({
       id: post.id,
@@ -103,7 +103,7 @@ export async function GET(request, { params }) {
       likesCount: post.likes.length,
       commentsCount: post.comments.length,
     }));
-    
+
     // Prepare response
     const userProfile = {
       id: user.id,
@@ -135,7 +135,7 @@ export async function GET(request, { params }) {
       })),
       posts: transformedPosts,
     };
-    
+
     return NextResponse.json({ user: userProfile });
   } catch (error) {
     console.error('Error fetching user profile:', error);
