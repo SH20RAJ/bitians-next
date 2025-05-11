@@ -6,10 +6,7 @@ import StatsCard from '../../components/admin/StatsCard';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export const metadata = {
-  title: 'Admin Dashboard | BITians',
-  description: 'Admin control panel for BITians platform',
-};
+// Metadata moved to layout.js since this is a client component
 
 export default function AdminDashboard() {
   // Mock data for recent activities
@@ -70,7 +67,7 @@ export default function AdminDashboard() {
       status: 'completed',
     },
   ];
-  
+
   // Mock data for pending approvals
   const pendingApprovals = [
     {
@@ -98,7 +95,7 @@ export default function AdminDashboard() {
       attendees: 56,
     },
   ];
-  
+
   // Get activity icon based on type
   const getActivityIcon = (type) => {
     switch (type) {
@@ -116,7 +113,7 @@ export default function AdminDashboard() {
         return <span className="material-symbols-rounded">info</span>;
     }
   };
-  
+
   // Get status badge based on status
   const getStatusBadge = (status) => {
     switch (status) {
@@ -130,7 +127,7 @@ export default function AdminDashboard() {
         return null;
     }
   };
-  
+
   // Get approval type icon
   const getApprovalTypeIcon = (type) => {
     switch (type) {
@@ -146,43 +143,43 @@ export default function AdminDashboard() {
   };
 
   return (
-    <AdminLayout 
-      activePage="dashboard" 
-      title="Admin Dashboard" 
+    <AdminLayout
+      activePage="dashboard"
+      title="Admin Dashboard"
       subtitle="Overview of platform activity and metrics"
     >
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <StatsCard 
-          title="Total Users" 
-          value="5,248" 
-          change={12.5} 
-          icon="group" 
-          color="blue" 
+        <StatsCard
+          title="Total Users"
+          value="5,248"
+          change={12.5}
+          icon="group"
+          color="blue"
         />
-        <StatsCard 
-          title="Active Users (24h)" 
-          value="1,856" 
-          change={8.3} 
-          icon="person" 
-          color="green" 
+        <StatsCard
+          title="Active Users (24h)"
+          value="1,856"
+          change={8.3}
+          icon="person"
+          color="green"
         />
-        <StatsCard 
-          title="New Posts" 
-          value="342" 
-          change={-3.2} 
-          icon="post_add" 
-          color="purple" 
+        <StatsCard
+          title="New Posts"
+          value="342"
+          change={-3.2}
+          icon="post_add"
+          color="purple"
         />
-        <StatsCard 
-          title="Reports" 
-          value="18" 
-          change={5.7} 
-          icon="flag" 
-          color="red" 
+        <StatsCard
+          title="Reports"
+          value="18"
+          change={5.7}
+          icon="flag"
+          color="red"
         />
       </div>
-      
+
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
@@ -190,7 +187,7 @@ export default function AdminDashboard() {
           <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden">
             <div className="p-4 border-b border-neutral-200 dark:border-neutral-700 flex justify-between items-center">
               <h2 className="text-lg font-semibold">Recent Activity</h2>
-              <Link 
+              <Link
                 href="/admin-cp/activity"
                 className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
               >
@@ -207,10 +204,10 @@ export default function AdminDashboard() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center">
                         <div className="relative h-5 w-5 rounded-full overflow-hidden mr-2">
-                          <Image 
-                            src={activity.user.avatar} 
-                            alt={activity.user.name} 
-                            fill 
+                          <Image
+                            src={activity.user.avatar}
+                            alt={activity.user.name}
+                            fill
                             className="object-cover"
                           />
                         </div>
@@ -231,13 +228,13 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-        
+
         {/* Pending Approvals */}
         <div className="lg:col-span-1">
           <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden">
             <div className="p-4 border-b border-neutral-200 dark:border-neutral-700 flex justify-between items-center">
               <h2 className="text-lg font-semibold">Pending Approvals</h2>
-              <Link 
+              <Link
                 href="/admin-cp/approvals"
                 className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
               >
@@ -280,35 +277,35 @@ export default function AdminDashboard() {
               )}
             </div>
           </div>
-          
+
           {/* Quick Actions */}
           <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden mt-6">
             <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
               <h2 className="text-lg font-semibold">Quick Actions</h2>
             </div>
             <div className="p-4 grid grid-cols-2 gap-3">
-              <Link 
+              <Link
                 href="/admin-cp/users/create"
                 className="flex flex-col items-center justify-center p-4 rounded-lg bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors"
               >
                 <span className="material-symbols-rounded text-blue-500 text-2xl mb-2">person_add</span>
                 <span className="text-sm text-center">Add User</span>
               </Link>
-              <Link 
+              <Link
                 href="/admin-cp/content/review"
                 className="flex flex-col items-center justify-center p-4 rounded-lg bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors"
               >
                 <span className="material-symbols-rounded text-amber-500 text-2xl mb-2">content_paste_search</span>
                 <span className="text-sm text-center">Review Content</span>
               </Link>
-              <Link 
+              <Link
                 href="/admin-cp/announcements/create"
                 className="flex flex-col items-center justify-center p-4 rounded-lg bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors"
               >
                 <span className="material-symbols-rounded text-green-500 text-2xl mb-2">campaign</span>
                 <span className="text-sm text-center">Announcement</span>
               </Link>
-              <Link 
+              <Link
                 href="/admin-cp/reports/export"
                 className="flex flex-col items-center justify-center p-4 rounded-lg bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors"
               >

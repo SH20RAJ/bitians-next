@@ -5,16 +5,13 @@ import AdminLayout from '../../../components/admin/AdminLayout';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export const metadata = {
-  title: 'Content Moderation | Admin CP',
-  description: 'Moderate content on the BITians platform',
-};
+// Metadata moved to layout.js since this is a client component
 
 export default function ContentModeration() {
   const [activeTab, setActiveTab] = useState('reported');
   const [selectedContentType, setSelectedContentType] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
-  
+
   // Mock data for reported content
   const reportedContent = [
     {
@@ -120,27 +117,27 @@ export default function ContentModeration() {
       action: 'removed',
     },
   ];
-  
+
   // Filter content based on type and status
   const filteredContent = reportedContent.filter(content => {
     const matchesType = selectedContentType === 'all' || content.type === selectedContentType;
     const matchesStatus = selectedStatus === 'all' || content.status === selectedStatus;
-    
+
     return matchesType && matchesStatus;
   });
-  
+
   // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
   };
-  
+
   // Get content type icon
   const getContentTypeIcon = (type) => {
     switch (type) {
@@ -156,7 +153,7 @@ export default function ContentModeration() {
         return <span className="material-symbols-rounded">article</span>;
     }
   };
-  
+
   // Get status badge
   const getStatusBadge = (status) => {
     switch (status) {
@@ -168,7 +165,7 @@ export default function ContentModeration() {
         return null;
     }
   };
-  
+
   // Get action badge
   const getActionBadge = (action) => {
     switch (action) {
@@ -184,38 +181,38 @@ export default function ContentModeration() {
   };
 
   return (
-    <AdminLayout 
-      activePage="content" 
-      title="Content Moderation" 
+    <AdminLayout
+      activePage="content"
+      title="Content Moderation"
       subtitle="Review and moderate user-generated content"
     >
       {/* Tabs */}
       <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden mb-6">
         <div className="flex border-b border-neutral-200 dark:border-neutral-700">
-          <button 
+          <button
             className={`flex-1 py-3 px-4 text-center font-medium text-sm ${
-              activeTab === 'reported' 
-                ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' 
+              activeTab === 'reported'
+                ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
                 : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors'
             }`}
             onClick={() => setActiveTab('reported')}
           >
             Reported Content
           </button>
-          <button 
+          <button
             className={`flex-1 py-3 px-4 text-center font-medium text-sm ${
-              activeTab === 'flagged' 
-                ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' 
+              activeTab === 'flagged'
+                ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
                 : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors'
             }`}
             onClick={() => setActiveTab('flagged')}
           >
             Auto-Flagged Content
           </button>
-          <button 
+          <button
             className={`flex-1 py-3 px-4 text-center font-medium text-sm ${
-              activeTab === 'reviewed' 
-                ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' 
+              activeTab === 'reviewed'
+                ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400'
                 : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors'
             }`}
             onClick={() => setActiveTab('reviewed')}
@@ -224,11 +221,11 @@ export default function ContentModeration() {
           </button>
         </div>
       </div>
-      
+
       {/* Filters */}
       <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-4 mb-6">
         <div className="flex flex-wrap gap-3">
-          <select 
+          <select
             className="py-2 px-3 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-sm border border-neutral-200 dark:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
             value={selectedContentType}
             onChange={(e) => setSelectedContentType(e.target.value)}
@@ -239,7 +236,7 @@ export default function ContentModeration() {
             <option value="hub">Hubs</option>
             <option value="circle">Circles</option>
           </select>
-          <select 
+          <select
             className="py-2 px-3 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-sm border border-neutral-200 dark:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
@@ -250,7 +247,7 @@ export default function ContentModeration() {
           </select>
         </div>
       </div>
-      
+
       {/* Content List */}
       <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden">
         <div className="divide-y divide-neutral-200 dark:divide-neutral-700">
@@ -260,15 +257,15 @@ export default function ContentModeration() {
                 {/* Content thumbnail for posts and hubs */}
                 {(content.type === 'post' || content.type === 'hub') && (
                   <div className="relative h-20 w-32 rounded-lg overflow-hidden mr-4 flex-shrink-0">
-                    <Image 
-                      src={content.thumbnail} 
-                      alt={content.title || 'Content thumbnail'} 
-                      fill 
+                    <Image
+                      src={content.thumbnail}
+                      alt={content.title || 'Content thumbnail'}
+                      fill
                       className="object-cover"
                     />
                   </div>
                 )}
-                
+
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center">
@@ -282,10 +279,10 @@ export default function ContentModeration() {
                         <div className="flex items-center text-sm text-neutral-600 dark:text-neutral-400">
                           <span>By</span>
                           <div className="relative h-4 w-4 rounded-full overflow-hidden mx-1">
-                            <Image 
-                              src={content.author.avatar} 
-                              alt={content.author.name} 
-                              fill 
+                            <Image
+                              src={content.author.avatar}
+                              alt={content.author.name}
+                              fill
                               className="object-cover"
                             />
                           </div>
@@ -298,19 +295,19 @@ export default function ContentModeration() {
                       {content.action && getActionBadge(content.action)}
                     </div>
                   </div>
-                  
+
                   <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 mb-2">
                     {content.content || content.description}
                   </p>
-                  
+
                   <div className="flex flex-wrap items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
                     <div className="flex items-center">
                       <span>Reported by</span>
                       <div className="relative h-4 w-4 rounded-full overflow-hidden mx-1">
-                        <Image 
-                          src={content.reportedBy.avatar} 
-                          alt={content.reportedBy.name} 
-                          fill 
+                        <Image
+                          src={content.reportedBy.avatar}
+                          alt={content.reportedBy.name}
+                          fill
                           className="object-cover"
                         />
                       </div>
@@ -320,7 +317,7 @@ export default function ContentModeration() {
                       <span className="mx-1">•</span>
                       <span>{formatDate(content.reportedAt)}</span>
                     </div>
-                    
+
                     {content.status === 'pending' ? (
                       <div className="flex space-x-2 mt-2 sm:mt-0">
                         <button className="px-3 py-1 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
@@ -343,7 +340,7 @@ export default function ContentModeration() {
               </div>
             </div>
           ))}
-          
+
           {filteredContent.length === 0 && (
             <div className="p-8 text-center text-neutral-500 dark:text-neutral-400">
               <span className="material-symbols-rounded text-4xl mb-2">content_paste_off</span>

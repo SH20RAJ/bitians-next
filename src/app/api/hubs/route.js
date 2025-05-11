@@ -3,8 +3,10 @@ import { db } from '@/lib/db';
 import { hubs, hubMembers, users } from '@/lib/db/schema';
 import { desc, eq, sql, and } from 'drizzle-orm';
 import { getSession } from '@/lib/auth/session';
+import { randomUUID } from '@/lib/edge-crypto';
 
-export const runtime = 'edge';
+// Temporarily disable edge runtime due to compatibility issues
+// export const runtime = 'edge';
 
 // GET /api/hubs - Get all hubs with pagination
 export async function GET(request) {
@@ -133,7 +135,7 @@ export async function POST(request) {
     }
 
     // Create hub
-    const hubId = crypto.randomUUID();
+    const hubId = randomUUID();
     await db.insert(hubs).values({
       id: hubId,
       name: body.name,

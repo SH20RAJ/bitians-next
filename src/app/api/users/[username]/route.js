@@ -4,7 +4,8 @@ import { users, posts, follows, circles, circleMembers, hubs, hubMembers } from 
 import { eq, desc, and, count, sql } from 'drizzle-orm';
 import { getSession } from '@/lib/auth/session';
 
-export const runtime = 'edge';
+// Temporarily disable edge runtime due to compatibility issues
+// export const runtime = 'edge';
 
 // GET /api/users/[username] - Get user profile
 export async function GET(request, { params }) {

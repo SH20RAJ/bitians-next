@@ -16,8 +16,7 @@
 		"db:generate": "drizzle-kit generate --config=drizzle.config.mjs",
 		"db:push": "drizzle-kit push --config=drizzle.config.mjs",
 		"db:studio": "drizzle-kit studio --config=drizzle.config.mjs",
-		"db:seed": "node --experimental-modules src/scripts/seed-db.mjs",
-		"install": "npm install --legacy-peer-deps"
+		"db:seed": "node --experimental-modules src/scripts/seed-db.mjs"
 	},
 	"dependencies": {
 		"@auth/core": "^0.38.0",

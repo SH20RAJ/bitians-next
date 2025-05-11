@@ -5,17 +5,14 @@ import AdminLayout from '../../../components/admin/AdminLayout';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export const metadata = {
-  title: 'User Management | Admin CP',
-  description: 'Manage users on the BITians platform',
-};
+// Metadata moved to layout.js since this is a client component
 
 export default function UserManagement() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   // Mock data for users
   const users = [
     {
@@ -115,20 +112,20 @@ export default function UserManagement() {
       isVerified: false,
     },
   ];
-  
+
   // Filter users based on search query, role, and status
   const filteredUsers = users.filter(user => {
-    const matchesSearch = 
+    const matchesSearch =
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     const matchesRole = selectedRole === 'all' || user.role === selectedRole;
     const matchesStatus = selectedStatus === 'all' || user.status === selectedStatus;
-    
+
     return matchesSearch && matchesRole && matchesStatus;
   });
-  
+
   // Pagination
   const usersPerPage = 5;
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
@@ -136,19 +133,19 @@ export default function UserManagement() {
     (currentPage - 1) * usersPerPage,
     currentPage * usersPerPage
   );
-  
+
   // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
-  
+
   // Format last active time
   const formatLastActive = (dateTimeString) => {
     const date = new Date(dateTimeString);
     const now = new Date();
     const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-    
+
     if (diffInDays === 0) {
       return 'Today';
     } else if (diffInDays === 1) {
@@ -159,7 +156,7 @@ export default function UserManagement() {
       return formatDate(dateTimeString);
     }
   };
-  
+
   // Get status badge
   const getStatusBadge = (status) => {
     switch (status) {
@@ -173,7 +170,7 @@ export default function UserManagement() {
         return null;
     }
   };
-  
+
   // Get role badge
   const getRoleBadge = (role) => {
     switch (role) {
@@ -189,18 +186,18 @@ export default function UserManagement() {
   };
 
   return (
-    <AdminLayout 
-      activePage="users" 
-      title="User Management" 
+    <AdminLayout
+      activePage="users"
+      title="User Management"
       subtitle="Manage and monitor user accounts"
     >
       {/* Filters and Search */}
       <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-4 mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="relative flex-1">
-            <input 
-              type="text" 
-              placeholder="Search users by name, username, or email..." 
+            <input
+              type="text"
+              placeholder="Search users by name, username, or email..."
               className="w-full py-2 px-4 pr-10 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-sm border border-neutral-200 dark:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -208,7 +205,7 @@ export default function UserManagement() {
             <span className="absolute right-3 top-1/2 transform -translate-y-1/2 material-symbols-rounded text-neutral-500">search</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            <select 
+            <select
               className="py-2 px-3 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-sm border border-neutral-200 dark:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
@@ -218,7 +215,7 @@ export default function UserManagement() {
               <option value="faculty">Faculty</option>
               <option value="admin">Admins</option>
             </select>
-            <select 
+            <select
               className="py-2 px-3 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-sm border border-neutral-200 dark:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
@@ -235,7 +232,7 @@ export default function UserManagement() {
           </div>
         </div>
       </div>
-      
+
       {/* Users Table */}
       <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden mb-6">
         <div className="overflow-x-auto">
@@ -257,10 +254,10 @@ export default function UserManagement() {
                   <td className="py-3 px-4">
                     <div className="flex items-center">
                       <div className="relative h-10 w-10 rounded-full overflow-hidden mr-3">
-                        <Image 
-                          src={user.avatar} 
-                          alt={user.name} 
-                          fill 
+                        <Image
+                          src={user.avatar}
+                          alt={user.name}
+                          fill
                           className="object-cover"
                         />
                       </div>
@@ -317,14 +314,14 @@ export default function UserManagement() {
             </tbody>
           </table>
         </div>
-        
+
         {/* Pagination */}
         <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
           <div className="text-sm text-neutral-600 dark:text-neutral-400">
             Showing {(currentPage - 1) * usersPerPage + 1} to {Math.min(currentPage * usersPerPage, filteredUsers.length)} of {filteredUsers.length} users
           </div>
           <div className="flex space-x-1">
-            <button 
+            <button
               className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
@@ -332,11 +329,11 @@ export default function UserManagement() {
               <span className="material-symbols-rounded">chevron_left</span>
             </button>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-              <button 
+              <button
                 key={page}
                 className={`w-8 h-8 rounded-lg ${
-                  currentPage === page 
-                    ? 'bg-primary-600 text-white' 
+                  currentPage === page
+                    ? 'bg-primary-600 text-white'
                     : 'hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-300'
                 } transition-colors`}
                 onClick={() => setCurrentPage(page)}
@@ -344,7 +341,7 @@ export default function UserManagement() {
                 {page}
               </button>
             ))}
-            <button 
+            <button
               className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}

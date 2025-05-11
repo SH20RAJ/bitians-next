@@ -4,7 +4,8 @@ import { posts, users, media, comments, likes } from '@/lib/db/schema';
 import { desc, eq, sql, and, isNull } from 'drizzle-orm';
 import { getSession } from '@/lib/auth/session';
 
-export const runtime = 'edge';
+// Temporarily disable edge runtime due to compatibility issues
+// export const runtime = 'edge';
 
 // GET /api/posts - Get all posts with pagination
 export async function GET(request) {

@@ -1,3 +1,5 @@
 #!/bin/bash
+echo "Installing dependencies with legacy-peer-deps..."
 npm install --legacy-peer-deps
-npm run pages:build
+echo "Running pages:build..."
+npx @cloudflare/next-on-pages

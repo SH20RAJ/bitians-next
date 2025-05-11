@@ -14,7 +14,8 @@ import {
 } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 
-export const runtime = 'edge';
+// Temporarily disable edge runtime due to compatibility issues
+// export const runtime = 'edge';
 
 // GET /api/seed - Seed the database with sample data
 export async function GET(request) {

@@ -3,8 +3,10 @@ import { db } from '@/lib/db';
 import { circles, circleMembers, users } from '@/lib/db/schema';
 import { desc, eq, sql, and } from 'drizzle-orm';
 import { getSession } from '@/lib/auth/session';
+import { randomUUID } from '@/lib/edge-crypto';
 
-export const runtime = 'edge';
+// Temporarily disable edge runtime due to compatibility issues
+// export const runtime = 'edge';
 
 // GET /api/circles - Get all circles with pagination
 export async function GET(request) {
@@ -132,7 +134,7 @@ export async function POST(request) {
     }
 
     // Create circle
-    const circleId = crypto.randomUUID();
+    const circleId = randomUUID();
     await db.insert(circles).values({
       id: circleId,
       name: body.name,
