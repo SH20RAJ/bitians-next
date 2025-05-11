@@ -7,16 +7,17 @@
 		},
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "next build",
+		"build": "npm install --legacy-peer-deps && next build",
 		"start": "next start",
 		"lint": "next lint",
-		"pages:build": "npx @cloudflare/next-on-pages",
+		"pages:build": "npm install --legacy-peer-deps && npx @cloudflare/next-on-pages",
 		"preview": "npm run pages:build && wrangler pages dev",
 		"deploy": "npm run pages:build && wrangler pages deploy",
 		"db:generate": "drizzle-kit generate --config=drizzle.config.mjs",
 		"db:push": "drizzle-kit push --config=drizzle.config.mjs",
 		"db:studio": "drizzle-kit studio --config=drizzle.config.mjs",
-		"db:seed": "node --experimental-modules src/scripts/seed-db.mjs"
+		"db:seed": "node --experimental-modules src/scripts/seed-db.mjs",
+		"install": "npm install --legacy-peer-deps"
 	},
 	"dependencies": {
 		"@auth/core": "^0.38.0",
