@@ -7,7 +7,8 @@ import { getSession } from '@/lib/auth/session';
 // GET /api/users/[username] - Get user profile
 export async function GET(request, { params }) {
   try {
-    const username = params.username;
+    // In Next.js 13+, params is already resolved, no need to await it
+    const { username } = params;
 
     // Get user data
     const user = await db.query.users.findFirst({

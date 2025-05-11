@@ -11,7 +11,7 @@ export async function GET(request) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const offset = (page - 1) * limit;
-    
+
     // Get posts with user info, media, comment count, and like count
     const postsData = await db.query.posts.findMany({
       orderBy: [desc(posts.createdAt)],
@@ -32,10 +32,11 @@ export async function GET(request) {
         likes: true,
       },
     });
-    
+
     // Transform the data to include comment count and like count
     const transformedPosts = postsData.map(post => {
       const { comments, likes, ...postData } = post;
+      // Return a transformed post object (not a Response)
       return {
         ...postData,
         commentsCount: comments.length,
@@ -65,12 +66,12 @@ export async function GET(request) {
         },
       };
     });
-    
+
     // Get total count for pagination
     const totalCountResult = await db.select({ count: sql`count(*)` }).from(posts);
     const totalCount = totalCountResult[0].count;
     const totalPages = Math.ceil(totalCount / limit);
-    
+
     return NextResponse.json({
       posts: transformedPosts,
       pagination: {
@@ -95,15 +96,15 @@ export async function POST(request) {
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
+
     const userId = session.user.id;
     const body = await request.json();
-    
+
     // Validate request body
     if (!body.content && (!body.media || body.media.length === 0)) {
       return NextResponse.json({ error: 'Post must have content or media' }, { status: 400 });
     }
-    
+
     // Create post
     const postId = crypto.randomUUID();
     await db.insert(posts).values({
@@ -115,7 +116,7 @@ export async function POST(request) {
       updatedAt: new Date(),
       isPublished: true,
     });
-    
+
     // Add media if provided
     if (body.media && body.media.length > 0) {
       const mediaValues = body.media.map(m => ({
@@ -126,10 +127,10 @@ export async function POST(request) {
         type: m.type,
         createdAt: new Date(),
       }));
-      
+
       await db.insert(media).values(mediaValues);
     }
-    
+
     // Fetch the created post with user info
     const createdPost = await db.query.posts.findFirst({
       where: eq(posts.id, postId),
@@ -138,7 +139,7 @@ export async function POST(request) {
         media: true,
       },
     });
-    
+
     return NextResponse.json({ post: createdPost }, { status: 201 });
   } catch (error) {
     console.error('Error creating post:', error);

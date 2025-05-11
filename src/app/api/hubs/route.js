@@ -11,7 +11,7 @@ export async function GET(request) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const offset = (page - 1) * limit;
-    
+
     // Get hubs with creator info and member count
     const hubsData = await db.query.hubs.findMany({
       orderBy: [desc(hubs.createdAt)],
@@ -27,11 +27,11 @@ export async function GET(request) {
         },
       },
     });
-    
+
     // Get session to check if user is a member of each hub
     const session = await getSession();
     const currentUserId = session?.user?.id;
-    
+
     // Transform the data to include member count and check if user is a member
     const transformedHubs = await Promise.all(hubsData.map(async (hub) => {
       // Get total member count
@@ -39,13 +39,13 @@ export async function GET(request) {
         .select({ count: sql`count(*)` })
         .from(hubMembers)
         .where(eq(hubMembers.hubId, hub.id));
-      
+
       const memberCount = memberCountResult[0].count;
-      
+
       // Check if current user is a member
       let isMember = false;
       let userRole = null;
-      
+
       if (currentUserId) {
         const memberRecord = await db
           .select()
@@ -57,13 +57,14 @@ export async function GET(request) {
             )
           )
           .limit(1);
-        
+
         if (memberRecord.length > 0) {
           isMember = true;
           userRole = memberRecord[0].role;
         }
       }
-      
+
+      // Return a transformed hub object (not a Response)
       return {
         id: hub.id,
         name: hub.name,
@@ -90,12 +91,12 @@ export async function GET(request) {
         })),
       };
     }));
-    
+
     // Get total count for pagination
     const totalCountResult = await db.select({ count: sql`count(*)` }).from(hubs);
     const totalCount = totalCountResult[0].count;
     const totalPages = Math.ceil(totalCount / limit);
-    
+
     return NextResponse.json({
       hubs: transformedHubs,
       pagination: {
@@ -120,15 +121,15 @@ export async function POST(request) {
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
+
     const userId = session.user.id;
     const body = await request.json();
-    
+
     // Validate request body
     if (!body.name) {
       return NextResponse.json({ error: 'Hub name is required' }, { status: 400 });
     }
-    
+
     // Create hub
     const hubId = crypto.randomUUID();
     await db.insert(hubs).values({
@@ -142,7 +143,7 @@ export async function POST(request) {
       coverImage: body.coverImage || null,
       isVerified: false,
     });
-    
+
     // Add creator as admin member
     await db.insert(hubMembers).values({
       hubId,
@@ -150,7 +151,7 @@ export async function POST(request) {
       role: 'admin',
       joinedAt: new Date(),
     });
-    
+
     // Fetch the created hub with creator info
     const createdHub = await db.query.hubs.findFirst({
       where: eq(hubs.id, hubId),
@@ -158,7 +159,7 @@ export async function POST(request) {
         createdBy: true,
       },
     });
-    
+
     return NextResponse.json({ hub: createdHub }, { status: 201 });
   } catch (error) {
     console.error('Error creating hub:', error);

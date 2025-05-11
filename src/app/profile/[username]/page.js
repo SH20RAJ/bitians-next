@@ -19,10 +19,11 @@ export default function ProfilePage() {
   const isCurrentUser = session?.user?.email === profile?.email;
 
   useEffect(() => {
-    if (status !== 'loading') {
+    if (status !== 'loading' && username) {
       const fetchProfileData = async () => {
         try {
-          const response = await fetch(`/api/users/${username}`);
+          // Make sure username is defined before making the request
+          const response = await fetch(`/api/users/${encodeURIComponent(username)}`);
 
           if (!response.ok) {
             throw new Error('Failed to fetch profile data');
