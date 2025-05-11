@@ -4,6 +4,8 @@ import { hubs, hubMembers, users } from '@/lib/db/schema';
 import { desc, eq, sql, and } from 'drizzle-orm';
 import { getSession } from '@/lib/auth/session';
 
+export const runtime = 'edge';
+
 // GET /api/hubs - Get all hubs with pagination
 export async function GET(request) {
   try {

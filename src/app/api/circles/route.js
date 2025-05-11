@@ -4,6 +4,8 @@ import { circles, circleMembers, users } from '@/lib/db/schema';
 import { desc, eq, sql, and } from 'drizzle-orm';
 import { getSession } from '@/lib/auth/session';
 
+export const runtime = 'edge';
+
 // GET /api/circles - Get all circles with pagination
 export async function GET(request) {
   try {

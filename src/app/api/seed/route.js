@@ -1,29 +1,31 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { 
-  users, 
-  posts, 
-  media, 
-  comments, 
-  likes, 
-  follows, 
-  circles, 
-  circleMembers, 
-  hubs, 
-  hubMembers 
+import {
+  users,
+  posts,
+  media,
+  comments,
+  likes,
+  follows,
+  circles,
+  circleMembers,
+  hubs,
+  hubMembers
 } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+
+export const runtime = 'edge';
 
 // GET /api/seed - Seed the database with sample data
 export async function GET(request) {
   try {
     // Check if database already has users
     const existingUsers = await db.select().from(users).limit(1);
-    
+
     if (existingUsers.length > 0) {
       return NextResponse.json({ message: 'Database already has data. Skipping seeding.' });
     }
-    
+
     // Sample user data
     const sampleUsers = [
       {
@@ -92,14 +94,14 @@ export async function GET(request) {
         updatedAt: new Date(),
       },
     ];
-    
+
     // Insert users
     await db.insert(users).values(sampleUsers);
-    
+
     // Get user IDs
     const userRecords = await db.select({ id: users.id }).from(users);
     const userIds = userRecords.map(user => user.id);
-    
+
     // Sample post data
     const samplePosts = [];
     const postTypes = ['text', 'photo', 'video', 'poll'];
@@ -115,12 +117,12 @@ export async function GET(request) {
       'Great lecture today on AI #artificialintelligence #learning',
       'Weekend vibes at campus #weekend #campus',
     ];
-    
+
     for (let i = 0; i < 20; i++) {
       const userId = userIds[Math.floor(Math.random() * userIds.length)];
       const type = postTypes[Math.floor(Math.random() * postTypes.length)];
       const content = postContents[Math.floor(Math.random() * postContents.length)];
-      
+
       samplePosts.push({
         id: crypto.randomUUID(),
         userId,
@@ -131,32 +133,32 @@ export async function GET(request) {
         isPublished: true,
       });
     }
-    
+
     // Insert posts
     await db.insert(posts).values(samplePosts);
-    
+
     // Get post IDs
     const postRecords = await db.select({ id: posts.id }).from(posts);
     const postIds = postRecords.map(post => post.id);
-    
+
     // Sample media data
     const sampleMedia = [];
     const mediaTypes = ['image', 'video'];
-    
+
     for (let i = 0; i < postIds.length; i++) {
       const postId = postIds[i];
       const userId = userIds[Math.floor(Math.random() * userIds.length)];
       const type = mediaTypes[Math.floor(Math.random() * mediaTypes.length)];
-      
+
       // Add 1-3 media items per post
       const mediaCount = Math.floor(Math.random() * 3) + 1;
-      
+
       for (let j = 0; j < mediaCount; j++) {
         const imageId = Math.floor(Math.random() * 1000);
-        const url = type === 'image' 
+        const url = type === 'image'
           ? `https://picsum.photos/id/${imageId}/800/800`
           : `https://example.com/videos/sample${j + 1}.mp4`;
-        
+
         sampleMedia.push({
           id: crypto.randomUUID(),
           postId,
@@ -167,10 +169,10 @@ export async function GET(request) {
         });
       }
     }
-    
+
     // Insert media
     await db.insert(media).values(sampleMedia);
-    
+
     // Sample comments data
     const sampleComments = [];
     const commentContents = [
@@ -185,12 +187,12 @@ export async function GET(request) {
       'Keep up the good work!',
       'This is so inspiring!',
     ];
-    
+
     for (let i = 0; i < 50; i++) {
       const postId = postIds[Math.floor(Math.random() * postIds.length)];
       const userId = userIds[Math.floor(Math.random() * userIds.length)];
       const content = commentContents[Math.floor(Math.random() * commentContents.length)];
-      
+
       sampleComments.push({
         id: crypto.randomUUID(),
         postId,
@@ -200,22 +202,22 @@ export async function GET(request) {
         updatedAt: new Date(),
       });
     }
-    
+
     // Insert comments
     await db.insert(comments).values(sampleComments);
-    
+
     // Get comment IDs
     const commentRecords = await db.select({ id: comments.id }).from(comments);
     const commentIds = commentRecords.map(comment => comment.id);
-    
+
     // Sample likes data
     const sampleLikes = [];
-    
+
     // Add likes to posts
     for (let i = 0; i < 100; i++) {
       const postId = postIds[Math.floor(Math.random() * postIds.length)];
       const userId = userIds[Math.floor(Math.random() * userIds.length)];
-      
+
       sampleLikes.push({
         id: crypto.randomUUID(),
         postId,
@@ -223,22 +225,22 @@ export async function GET(request) {
         createdAt: new Date(Date.now() - Math.floor(Math.random() * 14) * 24 * 60 * 60 * 1000), // Random date within last 14 days
       });
     }
-    
+
     // Insert likes
     await db.insert(likes).values(sampleLikes);
-    
+
     // Sample follows data
     const sampleFollows = [];
-    
+
     for (let i = 0; i < userIds.length; i++) {
       const followerId = userIds[i];
-      
+
       // Each user follows 1-3 random users
       const followCount = Math.floor(Math.random() * 3) + 1;
-      
+
       for (let j = 0; j < followCount; j++) {
         const followingId = userIds[Math.floor(Math.random() * userIds.length)];
-        
+
         // Don't follow yourself
         if (followerId !== followingId) {
           sampleFollows.push({
@@ -249,10 +251,10 @@ export async function GET(request) {
         }
       }
     }
-    
+
     // Insert follows
     await db.insert(follows).values(sampleFollows);
-    
+
     // Sample circles data
     const circleNames = [
       'CS Department',
@@ -264,7 +266,7 @@ export async function GET(request) {
       'Sports Team',
       'Music Band',
     ];
-    
+
     const circleDescriptions = [
       'A group for Computer Science students to discuss coursework and share resources.',
       'Team working on the final year project.',
@@ -275,12 +277,12 @@ export async function GET(request) {
       'Organizing sports events and practices.',
       'For music lovers to jam and perform together.',
     ];
-    
+
     const sampleCircles = [];
-    
+
     for (let i = 0; i < circleNames.length; i++) {
       const createdById = userIds[Math.floor(Math.random() * userIds.length)];
-      
+
       sampleCircles.push({
         id: crypto.randomUUID(),
         name: circleNames[i],
@@ -292,27 +294,27 @@ export async function GET(request) {
         isPrivate: Math.random() > 0.5 ? 1 : 0,
       });
     }
-    
+
     // Insert circles
     await db.insert(circles).values(sampleCircles);
-    
+
     // Get circle IDs
     const circleRecords = await db.select({ id: circles.id }).from(circles);
     const circleIds = circleRecords.map(circle => circle.id);
-    
+
     // Sample circle members data
     const sampleCircleMembers = [];
-    
+
     for (let i = 0; i < circleIds.length; i++) {
       const circleId = circleIds[i];
-      
+
       // Add 3-5 members to each circle
       const memberCount = Math.floor(Math.random() * 3) + 3;
-      
+
       for (let j = 0; j < memberCount; j++) {
         const userId = userIds[Math.floor(Math.random() * userIds.length)];
         const role = j === 0 ? 'admin' : (j === 1 && Math.random() > 0.5 ? 'moderator' : 'member');
-        
+
         sampleCircleMembers.push({
           circleId,
           userId,
@@ -321,10 +323,10 @@ export async function GET(request) {
         });
       }
     }
-    
+
     // Insert circle members
     await db.insert(circleMembers).values(sampleCircleMembers);
-    
+
     // Sample hubs data
     const hubNames = [
       'Tech Discussions',
@@ -336,7 +338,7 @@ export async function GET(request) {
       'Internship Opportunities',
       'Research Group',
     ];
-    
+
     const hubDescriptions = [
       'Discuss the latest in technology and share interesting articles.',
       'Share your campus experiences and connect with fellow students.',
@@ -347,12 +349,12 @@ export async function GET(request) {
       'Find and share internship opportunities.',
       'Collaborate on research projects and share findings.',
     ];
-    
+
     const sampleHubs = [];
-    
+
     for (let i = 0; i < hubNames.length; i++) {
       const createdById = userIds[Math.floor(Math.random() * userIds.length)];
-      
+
       sampleHubs.push({
         id: crypto.randomUUID(),
         name: hubNames[i],
@@ -365,27 +367,27 @@ export async function GET(request) {
         isVerified: Math.random() > 0.7 ? 1 : 0,
       });
     }
-    
+
     // Insert hubs
     await db.insert(hubs).values(sampleHubs);
-    
+
     // Get hub IDs
     const hubRecords = await db.select({ id: hubs.id }).from(hubs);
     const hubIds = hubRecords.map(hub => hub.id);
-    
+
     // Sample hub members data
     const sampleHubMembers = [];
-    
+
     for (let i = 0; i < hubIds.length; i++) {
       const hubId = hubIds[i];
-      
+
       // Add 5-10 members to each hub
       const memberCount = Math.floor(Math.random() * 6) + 5;
-      
+
       for (let j = 0; j < memberCount; j++) {
         const userId = userIds[Math.floor(Math.random() * userIds.length)];
         const role = j === 0 ? 'admin' : (j === 1 && Math.random() > 0.5 ? 'moderator' : 'member');
-        
+
         sampleHubMembers.push({
           hubId,
           userId,
@@ -394,10 +396,10 @@ export async function GET(request) {
         });
       }
     }
-    
+
     // Insert hub members
     await db.insert(hubMembers).values(sampleHubMembers);
-    
+
     return NextResponse.json({ message: 'Database seeded successfully!' });
   } catch (error) {
     console.error('Error seeding database:', error);
